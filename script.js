@@ -16,7 +16,8 @@ taskRootElm.addEventListener('click', (e) => {
 		taskArr[0].completed = true;
 
 		// タスクを入れ替え
-		localStorageEditItem('taskItem', taskId, taskArr[0])
+		localStorageEditItem('taskItem', taskId, taskArr[0]);
+		// localStorageSortItem();
 	}
 });
 
@@ -50,7 +51,6 @@ const createTaskItem = () => {
 	const objVal = createObj(seqNum, taskTitle, taskDueDate);
 	localStorageSetItem('taskItem', objVal);
 	seqNum++;
-
 }
 
 const createHtml = (title, dueDate) => {
@@ -95,6 +95,25 @@ const displayHtml = () => {
 		`);
 	}
 	taskRootElm.innerHTML = listArr.join('');
+}
+
+/**
+ * IDでソートしてlocalStorageを入れ替える
+ * @returns {void} 返り値なし
+ */
+function localStorageSortItem() {
+	const currentData = localStorageGetItem('taskItem');
+	const sortedArr = currentData.sort((a,b) => {
+		console.log(a)
+		console.log(b)
+		return a.id - b.id
+	});
+
+	// ソートした内容でlocalStorageを全入れ替え
+	localStorage.removeItem('taskItem');
+	for(const datum of sortedArr) {
+		localStorageSetItem('taskItem', datum);
+	}
 }
 
 /**
