@@ -10,6 +10,7 @@ let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem
 taskRootElm.addEventListener('click', (e) => {
 	if(e.target.className === 'task-item-mark-completed') {
 		const parentElm = e.target.parentElement;
+		parentElm.classList.add('completed');
 		const taskId = getTaskIdInHtml(parentElm);
 		const taskArr = getTaskInData(taskId);
 		taskArr[0].completed = true;
@@ -82,7 +83,7 @@ const displayHtml = () => {
 	const listArr = [];
 	for (const datum of currentData) {
 		listArr.push(`
-			<li class="task-item-body" data-id="${datum.id}">
+			<li class="${datum.completed ? 'completed ': ''}task-item-body" data-id="${datum.id}">
 				<button class="task-item-mark-completed">タスクを完了にする</button>
 				<button class="task-item-info">
 					${datum.title}<br>
@@ -179,6 +180,7 @@ function localStorageEditItem(key, id, target) {
  */
 function deleteAllItems() {
 	localStorage.clear();
+	location.reload();
 }
 
 
