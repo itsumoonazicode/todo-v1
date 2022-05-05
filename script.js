@@ -1,18 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-	const taskCompletedButton = document.querySelectorAll('.task-item-mark-completed');
-	taskCompletedButton.forEach((e) => {
-		e.addEventListener('click', (j) => {
-			let parentElm = j.target.parentElement;
-			let taskId = getTaskIdInHtml(parentElm);
-			let taskArr = getTaskInData(taskId);
-			taskArr[0].completed = true;
-
-			// タスクを入れ替え
-			localStorageEditItem('taskItem', taskId, taskArr[0])
-		})
-	})
-});
-
 const taskRootElm = document.querySelector('#task-item ul');
 const taskAdditionButton = document.getElementById('task-addition-btn');
 const taskInputTextElm = document.getElementById('input-task');
@@ -21,6 +6,18 @@ const btnDelete = document.getElementById('btn-delete');
 const flagCompleted = false;
 const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
+
+taskRootElm.addEventListener('click', (e) => {
+	if(e.target.className === 'task-item-mark-completed') {
+		const parentElm = e.target.parentElement;
+		const taskId = getTaskIdInHtml(parentElm);
+		const taskArr = getTaskInData(taskId);
+		taskArr[0].completed = true;
+
+		// タスクを入れ替え
+		localStorageEditItem('taskItem', taskId, taskArr[0])
+	}
+});
 
 const init = () => {
 	displayHtml();
@@ -53,8 +50,6 @@ const createTaskItem = () => {
 	localStorageSetItem('taskItem', objVal);
 	seqNum++;
 
-	// DOMの更新のためにリロードする
-	location.reload();
 }
 
 const createHtml = (title, dueDate) => {
