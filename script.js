@@ -101,7 +101,7 @@ const displayHtml = () => {
 			<li class="${datum.completed ? 'completed ' : ''}task-item-body list-group-item list-group-item-action" data-id="${datum.id}">
 				<div class="btn-group">
 					<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
-						<i class="bi bi-circle circle"></i>
+						<i class="bi circle ${datum.completed ? 'bi-check-circle-fill' : 'bi-circle'}"></i>
 					</button>
 					<button class="btn task-item-info">
 						${datum.title}<br>
@@ -220,7 +220,5 @@ function deleteAllItems() {
 	localStorage.clear();
 	location.reload();
 }
-
-
 
 init();
