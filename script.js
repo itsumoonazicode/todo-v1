@@ -8,15 +8,24 @@ const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
 
 taskRootElm.addEventListener('click', (e) => {
-	if(e.target.className === 'task-item-mark-completed') {
-		const parentElm = e.target.parentElement;
+	// タスクを完了にする
+	if (e.target.classList.contains('task-item-mark-completed') === true) {
+		console.log(e)
+		const parentElm = e.target.closest('.task-item-body')
+		// const parentElm = e.target.parentElement;
 		parentElm.classList.add('completed');
 		const taskId = getTaskIdInHtml(parentElm);
 		const taskArr = getTaskInData(taskId);
+		console.log(taskArr);
 		taskArr[0].completed = true;
 
 		// タスクを入れ替え
 		localStorageEditItem('taskItem', taskId, taskArr[0]);
+
+		// アイコンを完了マークに変更する
+		const childElm = e.target.children[0];
+		childElm.classList.remove('bi-circle');
+		childElm.classList.add('bi-check-circle-fill');
 		// localStorageSortItem();
 	}
 });
@@ -56,15 +65,21 @@ const createTaskItem = () => {
 const createHtml = (title, dueDate) => {
 	const listElm = document.createElement('li');
 	listElm.classList.add('task-item-body');
+	listElm.classList.add('list-group-item');
+	listElm.classList.add('list-group-item-action');
 	listElm.dataset.id = seqNum;
 	listElm.innerHTML = `
-		<button class="task-item-mark-completed">タスクを完了にする</button>
-		<button class="task-item-info">
-			${title}<br>
-			<span>
-				期限：<time>${dueDate}</time>
-			</span>
-		</button>
+		<div class="btn-group">
+			<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
+				<i class="bi bi-circle circle"></i>		
+			</button>
+			<button class="btn task-item-info">
+				${title}<br>
+				<span>
+					期限：<time>${dueDate}</time>
+				</span>
+			</button>
+		</div>
 	`
 	taskRootElm.appendChild(listElm);
 }
@@ -83,14 +98,18 @@ const displayHtml = () => {
 	const listArr = [];
 	for (const datum of currentData) {
 		listArr.push(`
-			<li class="${datum.completed ? 'completed ': ''}task-item-body" data-id="${datum.id}">
-				<button class="task-item-mark-completed">タスクを完了にする</button>
-				<button class="task-item-info">
-					${datum.title}<br>
-					<span>
-						期限：<time>${datum.due}</time>
-					</span>
-				</button>
+			<li class="${datum.completed ? 'completed ' : ''}task-item-body list-group-item list-group-item-action" data-id="${datum.id}">
+				<div class="btn-group">
+					<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
+						<i class="bi bi-circle circle"></i>
+					</button>
+					<button class="btn task-item-info">
+						${datum.title}<br>
+						<span>
+							期限：<time>${datum.due}</time>
+						</span>
+					</button>
+				</div>
 			</li>
 		`);
 	}
