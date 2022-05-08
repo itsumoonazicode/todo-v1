@@ -4,18 +4,21 @@ const taskAdditionButton = document.getElementById('task-addition-btn');
 const taskInputTextElm = document.getElementById('input-task');
 const taskInputDateElm = document.getElementById('input-date');
 const btnDelete = document.getElementById('btn-delete');
+const taskDetailContainerElm = document.querySelector('.task-detail');
 const taskDetailDuedateElm = document.querySelector('.task-detail-duedate');
+const taskDetailTitleElm = document.querySelector('.task-detail-title');
 const flagCompleted = false;
 const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
 
 taskRootElm.addEventListener('click', (e) => {
-	// タスクを完了にする
 	const parentElm = e.target.closest('.task-item-body')
 	const taskId = getTaskIdInHtml(parentElm);
 	const taskArr = getTaskInData(taskId);
 
+	// タスクを完了にする
 	if (e.target.classList.contains('task-item-mark-completed') === true) {
+
 		parentElm.classList.add('completed');
 		taskArr[0].completed = true;
 
@@ -31,28 +34,40 @@ taskRootElm.addEventListener('click', (e) => {
 
 	const targetTaskItemInfo = e.target.closest('.task-item-info');
 	if(targetTaskItemInfo) {
-		rightContainerElm.classList.toggle('d-none');
-		const taskDetailTitleElm = document.querySelector('.task-detail-title');
+		rightContainerElm.classList.remove('d-none');
+		taskDetailTitleElm.focus();
 		const taskValElm = targetTaskItemInfo.querySelector('.task-title');
 		const taskDuedateElm = targetTaskItemInfo.querySelector('.task-duedate');
 		taskDetailTitleElm.value = taskValElm.textContent;
 		taskDetailDuedateElm.textContent = taskDuedateElm.textContent;
+		taskDetailContainerElm.dataset.taskDetailId = taskId;
+	}
+});
 
-		taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
-			const key = keyEvent.key;
-			if(key === 'Enter') {
-				taskValElm.textContent = taskDetailTitleElm.value;
-				taskArr[0].title = taskDetailTitleElm.value;
-				// console.log(taskArr);
-				localStorageEditItem('taskItem', taskId, taskArr[0]);
-			}
+taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
+	// console.log(keyEvent);
+	const key = keyEvent.key;
+	const taskDetailId = (keyEvent.target.closest('.task-detail')).dataset.taskDetailId;
+	if(key === 'Enter') {
+		// タスク編集セクションから取ったIDと、タスク一覧のIDとで一致してるものを探す
+		const taskIdArr = [...document.querySelectorAll('[data-id]')];
+		const newData = taskIdArr.filter((g) => {
+			return taskDetailId === g.dataset.id;
 		});
+		const taskValElm = newData[0].querySelector('.task-title');
+		// console.log(taskDetailId)
+		const taskArr = getTaskInData(taskDetailId);
+		taskValElm.textContent = taskDetailTitleElm.value;
+		taskArr[0].title = taskDetailTitleElm.value;
+		// console.log(taskArr);
+		localStorageEditItem('taskItem', taskDetailId, taskArr[0]);
+		location.reload();
 	}
 });
 
 const toggleBtnElm = document.querySelector('.task-detail-toggle');
 toggleBtnElm.addEventListener('click', () => {
-	rightContainerElm.classList.toggle('d-none');
+	rightContainerElm.classList.add('d-none');
 });
 
 const init = () => {
@@ -180,6 +195,7 @@ function getRemovedData(id) {
  * @returns {Array} 指定タスクIDに合致した配列
  */
 function getTaskInData(id) {
+	id = Number(id);
 	const currentDataArr = localStorageGetItem('taskItem');
 	const filteredData = currentDataArr.filter((e) => {
 		return id === e.id;
