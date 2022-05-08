@@ -3,7 +3,6 @@ const taskAdditionButton = document.getElementById('task-addition-btn');
 const taskInputTextElm = document.getElementById('input-task');
 const taskInputDateElm = document.getElementById('input-date');
 const btnDelete = document.getElementById('btn-delete');
-const taskDetailTitleElm = document.querySelector('.task-detail-title');
 const taskDetailDuedateElm = document.querySelector('.task-detail-duedate');
 const flagCompleted = false;
 const objArr = [];
@@ -11,13 +10,12 @@ let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem
 
 taskRootElm.addEventListener('click', (e) => {
 	// タスクを完了にする
+	const parentElm = e.target.closest('.task-item-body')
+	const taskId = getTaskIdInHtml(parentElm);
+	const taskArr = getTaskInData(taskId);
+
 	if (e.target.classList.contains('task-item-mark-completed') === true) {
-		const parentElm = e.target.closest('.task-item-body')
-		// const parentElm = e.target.parentElement;
 		parentElm.classList.add('completed');
-		const taskId = getTaskIdInHtml(parentElm);
-		const taskArr = getTaskInData(taskId);
-		console.log(taskArr);
 		taskArr[0].completed = true;
 
 		// タスクを入れ替え
@@ -27,15 +25,29 @@ taskRootElm.addEventListener('click', (e) => {
 		const childElm = e.target.children[0];
 		childElm.classList.remove('bi-circle');
 		childElm.classList.add('bi-check-circle-fill');
+		location.reload();
 		// localStorageSortItem();
 	}
 
 	const targetTaskItemInfo = e.target.closest('.task-item-info');
 	if(targetTaskItemInfo) {
+		const taskDetailTitleElm = document.querySelector('.task-detail-title');
 		const taskValElm = targetTaskItemInfo.querySelector('.task-title');
 		const taskDuedateElm = targetTaskItemInfo.querySelector('.task-duedate');
 		taskDetailTitleElm.value = taskValElm.textContent;
 		taskDetailDuedateElm.textContent = taskDuedateElm.textContent;
+
+		taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
+			const key = keyEvent.key;
+			if(key === 'Enter') {
+				taskValElm.textContent = taskDetailTitleElm.value;
+				taskArr[0].title = taskDetailTitleElm.value;
+				// console.log(taskArr);
+				localStorageEditItem('taskItem', taskId, taskArr[0]);
+				location.reload();
+			}
+
+		})
 	}
 });
 
