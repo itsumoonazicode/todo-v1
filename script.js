@@ -1,4 +1,5 @@
 const taskRootElm = document.querySelector('#task-item ul');
+const rightContainerElm = document.getElementById('right-container');
 const taskAdditionButton = document.getElementById('task-addition-btn');
 const taskInputTextElm = document.getElementById('input-task');
 const taskInputDateElm = document.getElementById('input-date');
@@ -25,12 +26,12 @@ taskRootElm.addEventListener('click', (e) => {
 		const childElm = e.target.children[0];
 		childElm.classList.remove('bi-circle');
 		childElm.classList.add('bi-check-circle-fill');
-		location.reload();
 		// localStorageSortItem();
 	}
 
 	const targetTaskItemInfo = e.target.closest('.task-item-info');
 	if(targetTaskItemInfo) {
+		rightContainerElm.classList.toggle('d-none');
 		const taskDetailTitleElm = document.querySelector('.task-detail-title');
 		const taskValElm = targetTaskItemInfo.querySelector('.task-title');
 		const taskDuedateElm = targetTaskItemInfo.querySelector('.task-duedate');
@@ -44,11 +45,14 @@ taskRootElm.addEventListener('click', (e) => {
 				taskArr[0].title = taskDetailTitleElm.value;
 				// console.log(taskArr);
 				localStorageEditItem('taskItem', taskId, taskArr[0]);
-				location.reload();
 			}
-
-		})
+		});
 	}
+});
+
+const toggleBtnElm = document.querySelector('.task-detail-toggle');
+toggleBtnElm.addEventListener('click', () => {
+	rightContainerElm.classList.toggle('d-none');
 });
 
 const init = () => {
