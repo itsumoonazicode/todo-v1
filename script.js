@@ -3,6 +3,8 @@ const taskAdditionButton = document.getElementById('task-addition-btn');
 const taskInputTextElm = document.getElementById('input-task');
 const taskInputDateElm = document.getElementById('input-date');
 const btnDelete = document.getElementById('btn-delete');
+const taskDetailTitleElm = document.querySelector('.task-detail-title');
+const taskDetailDuedateElm = document.querySelector('.task-detail-duedate');
 const flagCompleted = false;
 const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
@@ -10,7 +12,6 @@ let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem
 taskRootElm.addEventListener('click', (e) => {
 	// タスクを完了にする
 	if (e.target.classList.contains('task-item-mark-completed') === true) {
-		console.log(e)
 		const parentElm = e.target.closest('.task-item-body')
 		// const parentElm = e.target.parentElement;
 		parentElm.classList.add('completed');
@@ -27,6 +28,14 @@ taskRootElm.addEventListener('click', (e) => {
 		childElm.classList.remove('bi-circle');
 		childElm.classList.add('bi-check-circle-fill');
 		// localStorageSortItem();
+	}
+
+	const targetTaskItemInfo = e.target.closest('.task-item-info');
+	if(targetTaskItemInfo) {
+		const taskValElm = targetTaskItemInfo.querySelector('.task-title');
+		const taskDuedateElm = targetTaskItemInfo.querySelector('.task-duedate');
+		taskDetailTitleElm.value = taskValElm.textContent;
+		taskDetailDuedateElm.textContent = taskDuedateElm.textContent;
 	}
 });
 
@@ -74,9 +83,9 @@ const createHtml = (title, dueDate) => {
 				<i class="bi bi-circle circle"></i>		
 			</button>
 			<button class="btn task-item-info">
-				${title}<br>
+				<span class="task-title">${title}</span><br>
 				<span>
-					期限：<time>${dueDate}</time>
+					期限：<time class="task-duedate">${dueDate}</time>
 				</span>
 			</button>
 		</div>
@@ -104,9 +113,9 @@ const displayHtml = () => {
 						<i class="bi circle ${datum.completed ? 'bi-check-circle-fill' : 'bi-circle'}"></i>
 					</button>
 					<button class="btn task-item-info">
-						${datum.title}<br>
+						<span class="task-title">${datum.title}</span><br>
 						<span>
-							期限：<time>${datum.due}</time>
+							期限：<time class="task-duedate">${datum.due}</time>
 						</span>
 					</button>
 				</div>

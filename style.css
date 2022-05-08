@@ -1,3 +1,7 @@
-.circle {
+body {
+	background-color: #ebebeb;
+}
+
+.circle, .task-duedate, .task-title {
 	pointer-events: none;
 }

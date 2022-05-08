@@ -10,22 +10,38 @@
 </head>
 <body>
 	<div class="container">
-		<div id="task-addition">
-			<label class="form-label">
-				タスクを追加する
-				<input type="text" id="input-task" class="form-control">
-			</label>
-			<label class="form-label">
-				期限を設定する
-				<input type="date" name="" id="input-date" class="form-control">
-			</label>
-			<button type="button" class="btn btn-danger" id="task-addition-btn">タスクを追加</button>
-		</div>
-		<div>
-			<button id="btn-delete">タスクをすべて削除</button>
-		</div>
-		<div id="task-item">
-			<ul class="list-group list-group-flush"></ul>
+		<div class="row">
+			<div class="col">
+				<div id="task-addition">
+					<label class="form-label">
+						タスクを追加する
+						<input type="text" id="input-task" class="form-control">
+					</label>
+					<label class="form-label">
+						期限を設定する
+						<input type="date" name="" id="input-date" class="form-control">
+					</label>
+					<button type="button" class="btn btn-danger" id="task-addition-btn">タスクを追加</button>
+				</div>
+				<div>
+					<button id="btn-delete">タスクをすべて削除</button>
+				</div>
+				<div id="task-item">
+					<ul class="list-group list-group-flush"></ul>
+				</div>
+			</div>
+			<div id="right-container" class="col">
+				<div class="p-3 sticky-top">
+					<div class="bg-white">
+						<input type="text" value="健康診断の予約をする" class="form-control task-detail-title">
+					</div>
+					<div class="bg-white">
+						<p class="p-2">
+							期限：<time class="task-detail-duedate">2022-06-20</time>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<script src="script.js"></script>
