@@ -157,6 +157,10 @@ const createObj = (seqNum, title, dueDate) => {
 
 const displayHtml = () => {
 	const currentData = localStorageGetItem('taskItem');
+	currentData.sort((a, b) => {
+		return a.created > b.created ? 1 : -1;
+	});
+
 	const listArr = [];
 	const listCompletedArr = [];
 	for (const datum of currentData) {
