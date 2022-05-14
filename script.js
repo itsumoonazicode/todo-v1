@@ -19,16 +19,19 @@ taskRootElm.addEventListener('click', (e) => {
 	// タスクを完了にする
 	if (e.target.classList.contains('task-item-mark-completed') === true) {
 
-		parentElm.classList.add('completed');
-		taskArr[0].completed = true;
+		toggleComplete(parentElm, taskId, taskArr[0]);
+		location.reload();
 
-		// タスクを入れ替え
-		localStorageEditItem('taskItem', taskId, taskArr[0]);
+		// parentElm.classList.add('completed');
+		// taskArr[0].completed = true;
 
-		// アイコンを完了マークに変更する
-		const childElm = e.target.children[0];
-		childElm.classList.remove('bi-circle');
-		childElm.classList.add('bi-check-circle-fill');
+		// // タスクを入れ替え
+		// localStorageEditItem('taskItem', taskId, taskArr[0]);
+
+		// // アイコンを完了マークに変更する
+		// const childElm = e.target.children[0];
+		// childElm.classList.remove('bi-circle');
+		// childElm.classList.add('bi-check-circle-fill');
 		// localStorageSortItem();
 	}
 
@@ -43,6 +46,25 @@ taskRootElm.addEventListener('click', (e) => {
 		taskDetailContainerElm.dataset.taskDetailId = taskId;
 	}
 });
+
+/**
+ * 完了・未完了を切り替えます。
+ */
+function toggleComplete(liElm, taskId, taskObj) {
+	liElm.classList.toggle('completed');
+	taskObj.completed = !taskObj.completed;
+
+	const elmIconCompleted = liElm.querySelector('.circle');
+	if(elmIconCompleted.classList.contains('bi-circle') === true) {
+		elmIconCompleted.classList.remove('bi-circle');
+		elmIconCompleted.classList.add('bi-check-circle-fill');
+	} else {
+		elmIconCompleted.classList.remove('bi-check-circle-fill');
+		elmIconCompleted.classList.add('bi-circle');
+	}
+	
+	localStorageEditItem('taskItem', taskId, taskObj);
+}
 
 taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
 	// console.log(keyEvent);
