@@ -137,7 +137,7 @@ const createHtml = (title, dueDate) => {
 			</button>
 			<button class="btn task-item-info">
 				<span class="task-title">${title}</span><br>
-				<span>
+				<span class="${dueDate ? '' : 'd-none'}">
 					期限：<time class="task-duedate">${dueDate}</time>
 				</span>
 			</button>
@@ -167,7 +167,7 @@ const displayHtml = () => {
 					</button>
 					<button class="btn task-item-info">
 						<span class="task-title">${datum.title}</span><br>
-						<span>
+						<span class="${datum.due ? '' : 'd-none'}">
 							期限：<time class="task-duedate">${datum.due}</time>
 						</span>
 					</button>

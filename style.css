@@ -5,3 +5,19 @@ body {
 .circle, .task-duedate, .task-title {
 	pointer-events: none;
 }
+
+.task-item-info {
+	text-align: left;
+}
+
+.completed .task-title {
+	text-decoration: line-through;
+}
+
+.completed .task-item-info {
+	color: darkgrey;
+}
+
+.completed .circle {
+	color: forestgreen;
+}
