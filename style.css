@@ -2,6 +2,17 @@ body {
 	background-color: #ebebeb;
 }
 
+.bg-active {
+	background-color: #8ccbcb;
+}
+.bg-active:hover {
+	background-color: #8ccbcb;
+}
+
+.bg-active.completed .task-item-info {
+	color: currentColor;
+}
+
 .circle, .task-duedate, .task-title {
 	pointer-events: none;
 }
