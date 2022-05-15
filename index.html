@@ -13,29 +13,28 @@
 	<div class="container">
 		<div class="row">
 			<div class="col">
-				<div id="task-addition">
-					<label class="form-label">
-						タスクを追加する
-						<input type="text" id="input-task" class="form-control">
-					</label>
-					<label class="form-label">
-						期限を設定する
-						<input type="date" name="" id="input-date" class="form-control">
-					</label>
-					<button type="button" class="btn btn-danger" id="task-addition-btn">タスクを追加</button>
+				<div id="task-addition" class="row row-cols-auto justify-content-between">
+					<div class="col">
+						<label class="form-label">
+							タスクを追加する
+							<input type="text" id="input-task" class="form-control">
+						</label>
+						<label class="form-label">
+							期限を設定する
+							<input type="date" name="" id="input-date" class="form-control">
+						</label>
+						<button type="button" class="btn btn-dark" id="task-addition-btn">タスクを追加</button>
+					</div>
+					<div class="col-2">
+						<label for="select-sort" class="form-label">並び替え</label>
+						<select name="" id="select-sort" class="form-select">
+							<option value="created">作成日</option>
+							<option value="due">期限日</option>
+						</select>
+					</div>
 				</div>
-				<div>
-					<label for="select-sort" class="form-label">並び替え</label>
-					<select name="" id="select-sort" class="form-select">
-						<option value="created">作成日</option>
-						<option value="due">期限日</option>
-					</select>
-				</div>
-				<div>
-					<button id="btn-delete">タスクをすべて削除</button>
-				</div>
-				<div>
-					<button>リストをすべて完了にする</button>
+				<div class="btn-group">
+					<button id="btn-delete" class="btn btn-danger">タスクをすべて削除</button>
 				</div>
 				<div id="task-item">
 					<div>
