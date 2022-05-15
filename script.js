@@ -8,6 +8,7 @@ const btnDelete = document.getElementById('btn-delete');
 const taskDetailContainerElm = document.querySelector('.task-detail');
 const taskDetailDuedateElm = document.querySelector('.task-detail-duedate');
 const taskDetailTitleElm = document.querySelector('.task-detail-title');
+const sortSelectElm = document.getElementById('select-sort');
 const flagCompleted = false;
 const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
@@ -47,21 +48,28 @@ taskRootElm.addEventListener('click', (e) => {
 	}
 });
 
+sortSelectElm.addEventListener('change', (e) => {
+	const selectVal = e.target.value;
+	localStorage.setItem('sortVal', selectVal);
+
+	location.reload();
+});
+
 /**
  * 完了・未完了を切り替えます。
  */
 function toggleComplete(liElm, taskId, taskObj) {
-	liElm.classList.toggle('completed');
+	// liElm.classList.toggle('completed');
 	taskObj.completed = !taskObj.completed;
 
-	const elmIconCompleted = liElm.querySelector('.circle');
-	if(elmIconCompleted.classList.contains('bi-circle') === true) {
-		elmIconCompleted.classList.remove('bi-circle');
-		elmIconCompleted.classList.add('bi-check-circle-fill');
-	} else {
-		elmIconCompleted.classList.remove('bi-check-circle-fill');
-		elmIconCompleted.classList.add('bi-circle');
-	}
+	// const elmIconCompleted = liElm.querySelector('.circle');
+	// if(elmIconCompleted.classList.contains('bi-circle') === true) {
+	// 	elmIconCompleted.classList.remove('bi-circle');
+	// 	elmIconCompleted.classList.add('bi-check-circle-fill');
+	// } else {
+	// 	elmIconCompleted.classList.remove('bi-check-circle-fill');
+	// 	elmIconCompleted.classList.add('bi-circle');
+	// }
 	
 	localStorageEditItem('taskItem', taskId, taskObj);
 }
@@ -93,6 +101,11 @@ toggleBtnElm.addEventListener('click', () => {
 });
 
 const init = () => {
+	if(localStorage.getItem('sortVal')) {
+		// 何もしない
+	} else {
+		localStorage.setItem('sortVal', 'created');
+	}
 	displayHtml();
 }
 
@@ -144,21 +157,35 @@ const createHtml = (title, dueDate) => {
 		</div>
 	`
 	taskRootElm.appendChild(listElm);
+	location.reload();
 }
 const createObj = (seqNum, title, dueDate) => {
+	const now = (new Date()).toLocaleString();
 	const obj = ({
 		"id": seqNum,
 		"title": title,
 		"due": dueDate,
-		"completed": false
+		"completed": false,
+		"created": now
 	});
 	return obj;
 }
 
 const displayHtml = () => {
+	const sortVal = localStorage.getItem('sortVal');
+	const optionElm = sortSelectElm.querySelectorAll('option');
+	optionElm.forEach((e) => {
+		if(sortVal === e.value) {
+			e.setAttribute('selected', 'selected');
+		}
+	})
 	const currentData = localStorageGetItem('taskItem');
 	currentData.sort((a, b) => {
-		return a.created > b.created ? 1 : -1;
+		if(sortVal === 'created' || sortVal === '') {
+			return a.created < b.created ? 1 : -1;
+		} else if(sortVal === 'due') {
+			return a.due < b.due ? 1 : -1;
+		}
 	});
 
 	const listArr = [];
