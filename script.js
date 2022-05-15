@@ -14,7 +14,10 @@ const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
 
 taskRootElm.addEventListener('click', (e) => {
-	const parentElm = e.target.closest('.task-item-body')
+	const parentElm = e.target.closest('.task-item-body');
+	const targetTaskItemInfo = e.target.closest('.task-item-info');
+	if (!(parentElm || targetTaskItemInfo)) return;
+	
 	const taskId = getTaskIdInHtml(parentElm);
 	const taskArr = getTaskInData(taskId);
 
@@ -36,7 +39,6 @@ taskRootElm.addEventListener('click', (e) => {
 		// localStorageSortItem();
 	}
 
-	const targetTaskItemInfo = e.target.closest('.task-item-info');
 	if(targetTaskItemInfo) {
 		rightContainerElm.classList.remove('d-none');
 		taskDetailTitleElm.focus();
