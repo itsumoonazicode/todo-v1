@@ -14,6 +14,7 @@ const objArr = [];
 let seqNum = localStorage.getItem('taskItem') ? (JSON.parse(localStorage.getItem('taskItem'))).length + 1 : 1;
 
 taskRootElm.addEventListener('click', (e) => {
+	console.log(e);
 	const parentElm = e.target.closest('.task-item-body');
 	const targetTaskItemInfo = e.target.closest('.task-item-info');
 	if (!(parentElm || targetTaskItemInfo)) return;
@@ -40,13 +41,44 @@ taskRootElm.addEventListener('click', (e) => {
 	}
 
 	if(targetTaskItemInfo) {
+		const taskList = document.querySelectorAll('.task-item-body');
+		taskList.forEach(e => e.classList.remove('bg-active'));
+		parentElm.classList.add('bg-active');
 		rightContainerElm.classList.remove('d-none');
 		taskDetailTitleElm.focus();
 		const taskValElm = targetTaskItemInfo.querySelector('.task-title');
 		const taskDuedateElm = targetTaskItemInfo.querySelector('.task-duedate');
 		taskDetailTitleElm.value = taskValElm.textContent;
-		taskDetailDuedateElm.textContent = taskDuedateElm.textContent;
+		taskDetailDuedateElm.value = taskDuedateElm.textContent;
 		taskDetailContainerElm.dataset.taskDetailId = taskId;
+		flatpickr(taskDetailDuedateElm, {
+			defaultDate: taskDuedateElm.textContent
+		});
+
+		taskDetailDuedateElm.addEventListener('change', (dateElm) => {
+			const taskDetailId = taskId;
+			taskArr[0].due = dateElm.target.value;
+			taskDuedateElm.textContent = dateElm.target.value;
+			localStorageEditItem('taskItem', taskDetailId, taskArr[0]);
+		});
+
+		taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
+			// console.log(keyEvent);
+			const key = keyEvent.key;
+			const taskDetailId = taskId;
+			if (key === 'Enter') {
+				keyEvent.preventDefault();
+				const taskArr = getTaskInData(taskDetailId);
+
+				taskValElm.textContent = taskDetailTitleElm.value;
+				taskArr[0].title = taskDetailTitleElm.value;
+
+				// console.log(taskArr);
+				localStorageEditItem('taskItem', taskDetailId, taskArr[0]);
+				// location.reload();
+			}
+		});
+
 	}
 });
 
@@ -75,27 +107,6 @@ function toggleComplete(liElm, taskId, taskObj) {
 	
 	localStorageEditItem('taskItem', taskId, taskObj);
 }
-
-taskDetailTitleElm.addEventListener('keyup', (keyEvent) => {
-	// console.log(keyEvent);
-	const key = keyEvent.key;
-	const taskDetailId = (keyEvent.target.closest('.task-detail')).dataset.taskDetailId;
-	if(key === 'Enter') {
-		// タスク編集セクションから取ったIDと、タスク一覧のIDとで一致してるものを探す
-		const taskIdArr = [...document.querySelectorAll('[data-id]')];
-		const newData = taskIdArr.filter((g) => {
-			return taskDetailId === g.dataset.id;
-		});
-		const taskValElm = newData[0].querySelector('.task-title');
-		// console.log(taskDetailId)
-		const taskArr = getTaskInData(taskDetailId);
-		taskValElm.textContent = taskDetailTitleElm.value;
-		taskArr[0].title = taskDetailTitleElm.value;
-		// console.log(taskArr);
-		localStorageEditItem('taskItem', taskDetailId, taskArr[0]);
-		location.reload();
-	}
-});
 
 const toggleBtnElm = document.querySelector('.task-detail-toggle');
 toggleBtnElm.addEventListener('click', () => {
@@ -146,11 +157,11 @@ const createHtml = (title, dueDate) => {
 	listElm.classList.add('list-group-item-action');
 	listElm.dataset.id = seqNum;
 	listElm.innerHTML = `
-		<div class="btn-group">
+		<div class="d-flex">
 			<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
 				<i class="bi bi-circle circle"></i>		
 			</button>
-			<button class="btn task-item-info">
+			<button class="btn task-item-info flex-grow-1">
 				<span class="task-title">${title}</span><br>
 				<span class="${dueDate ? '' : 'd-none'}">
 					期限：<time class="task-duedate">${dueDate}</time>
@@ -186,7 +197,7 @@ const displayHtml = () => {
 		if(sortVal === 'created' || sortVal === '') {
 			return a.created < b.created ? 1 : -1;
 		} else if(sortVal === 'due') {
-			return a.due < b.due ? 1 : -1;
+			return a.due > b.due ? 1 : -1;
 		}
 	});
 
@@ -196,11 +207,11 @@ const displayHtml = () => {
 		if(datum.completed) {
 			listCompletedArr.push(`
 				<li class="completed task-item-body list-group-item list-group-item-action" data-id="${datum.id}">
-					<div class="btn-group">
+					<div class="d-flex">
 						<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
 							<i class="bi circle bi-check-circle-fill"></i>
 						</button>
-						<button class="btn task-item-info">
+						<button class="btn task-item-info flex-grow-1">
 							<span class="task-title">${datum.title}</span><br>
 							<span class="${datum.due ? '' : 'd-none'}">
 								期限：<time class="task-duedate">${datum.due}</time>
@@ -212,11 +223,11 @@ const displayHtml = () => {
 		} else {
 			listArr.push(`
 				<li class="task-item-body list-group-item list-group-item-action" data-id="${datum.id}">
-					<div class="btn-group">
+					<div class="d-flex">
 						<button class="btn task-item-mark-completed" aria-label="タスクを完了にする">
 							<i class="bi circle bi-circle"></i>
 						</button>
-						<button class="btn task-item-info">
+						<button class="btn task-item-info flex-grow-1">
 							<span class="task-title">${datum.title}</span><br>
 							<span class="${datum.due ? '' : 'd-none'}">
 								期限：<time class="task-duedate">${datum.due}</time>
@@ -336,6 +347,13 @@ function localStorageEditItem(key, id, target) {
 function deleteAllItems() {
 	localStorage.clear();
 	location.reload();
+}
+
+// flatpickrの初期日時設定用関数
+function readyFp(date) {
+	const fp = flatpickr(taskDetailDuedateElm, {
+		defaultDate: date
+	});
 }
 
 init();
